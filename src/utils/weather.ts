@@ -1,6 +1,38 @@
 const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
 const BASE_URL = "https://api.openweathermap.org/data/2.5";
 
+interface OpenWeatherCurrent {
+  main: {
+    temp: number;
+    humidity: number;
+  };
+  weather: Array<{
+    main: string;
+    icon: string;
+  }>;
+  wind: {
+    speed: number;
+  };
+  timezone: number;
+}
+
+interface OpenWeatherForecast {
+  list: Array<{
+    dt: number;
+    main: {
+      temp: number;
+      humidity: number;
+    };
+    weather: Array<{
+      main: string;
+      icon: string;
+    }>;
+    wind: {
+      speed: number;
+    };
+  }>;
+}
+
 export interface WeatherData {
   current: {
     temp: number;
@@ -57,9 +89,11 @@ export const getWeatherData = async (
 
     // Process forecast data
     const forecast = forecastData.list
-      .filter((_: any, index: number) => index % 8 === 0) // Get one reading per day
+      .filter(
+        (_: OpenWeatherForecast["list"][0], index: number) => index % 8 === 0
+      ) // Get one reading per day
       .slice(0, 5) // Get only 5 days
-      .map((day: any) => ({
+      .map((day: OpenWeatherForecast["list"][0]) => ({
         date: getDayName(new Date(day.dt * 1000)),
         temp: kelvinToCelsius(day.main.temp),
         humidity: day.main.humidity,

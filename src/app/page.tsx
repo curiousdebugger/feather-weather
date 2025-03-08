@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { WeatherData, getWeatherData } from "@/utils/weather";
 import SearchBar from "@/components/SearchBar";
 import WeatherScene from "@/components/WeatherScene";
@@ -35,7 +35,7 @@ export default function Home() {
     setIsNight(hours < 6 || hours >= 18); // Night time between 6 PM and 6 AM
   };
 
-  const fetchWeatherData = async (lat: number, lon: number) => {
+  const fetchWeatherData = useCallback(async (lat: number, lon: number) => {
     try {
       setLoading(true);
       const data = await getWeatherData(lat, lon);
@@ -48,7 +48,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const fetchCurrentLocation = () => {
@@ -75,7 +75,7 @@ export default function Home() {
     };
 
     fetchCurrentLocation();
-  }, []);
+  }, [fetchWeatherData]);
 
   const handleLocationSelect = async (location: Location) => {
     setCurrentLocation(location);
