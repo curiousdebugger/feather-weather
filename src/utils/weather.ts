@@ -69,14 +69,14 @@ export const getWeatherData = async (
     const currentResponse = await fetch(
       `${BASE_URL}/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`
     );
-    const currentData = await currentResponse.json();
+    const currentData: OpenWeatherCurrent = await currentResponse.json();
     console.log("API Response - Current Weather:", currentData); // Debug log
 
     // Fetch 5-day forecast
     const forecastResponse = await fetch(
       `${BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${API_KEY}`
     );
-    const forecastData = await forecastResponse.json();
+    const forecastData: OpenWeatherForecast = await forecastResponse.json();
 
     // Process current weather
     const current = {
